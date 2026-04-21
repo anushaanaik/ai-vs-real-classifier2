@@ -1,0 +1,12 @@
+Dataset: AI Generated Images vs Real Images
+Source:  Kaggle
+URL:     https://www.kaggle.com/datasets/tristanzhang32/ai-generated-images-vs-real-images
+
+Instructions:
+1. Sign in to Kaggle
+2. Visit the URL above
+3. Click "Download" to get the zip
+4. Place the zip at:  data/ai-generated-images-vs-real-images.zip
+
+Alternative (Kaggle CLI):
+  kaggle datasets download -d tristanzhang32/ai-generated-images-vs-real-images -p data/

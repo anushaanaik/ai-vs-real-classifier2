@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>AI vs Real — Image Classifier</title>
+  <link rel="stylesheet" href="/static/style.css" />
+</head>
+<body>
+
+  <!-- ── Header ── -->
+  <header>
+    <div class="logo">
+      <span class="logo-icon">🧠</span>
+      <span class="logo-text">AI<span class="accent">vs</span>Real</span>
+    </div>
+    <p class="tagline">Upload an image to detect if it's AI-generated or real</p>
+  </header>
+
+  <!-- ── Main ── -->
+  <main>
+
+    <!-- Upload card -->
+    <div class="card upload-card" id="uploadCard">
+      <div
+        class="drop-zone"
+        id="dropZone"
+        role="button"
+        tabindex="0"
+        aria-label="Upload image"
+      >
+        <div class="drop-icon">📁</div>
+        <p class="drop-primary">Drop an image here</p>
+        <p class="drop-secondary">or <label for="fileInput" class="browse-link">browse files</label></p>
+        <p class="drop-hint">JPEG · PNG · WebP — max 10 MB</p>
+        <input type="file" id="fileInput" accept="image/jpeg,image/png,image/webp" hidden />
+      </div>
+    </div>
+
+    <!-- Preview + result card (hidden until image selected) -->
+    <div class="card result-card hidden" id="resultCard">
+
+      <!-- Image preview -->
+      <div class="preview-wrap">
+        <img id="previewImg" src="" alt="Preview" />
+        <button class="btn-reset" id="resetBtn" title="Try another image">✕ Try another</button>
+      </div>
+
+      <!-- Result panel -->
+      <div class="result-panel" id="resultPanel">
+
+        <!-- Loading state -->
+        <div class="state state-loading" id="stateLoading">
+          <div class="spinner"></div>
+          <p>Analysing image…</p>
+        </div>
+
+        <!-- Success state -->
+        <div class="state state-result hidden" id="stateResult">
+          <div class="verdict" id="verdictBadge"></div>
+          <div class="confidence-wrap">
+            <div class="confidence-label">
+              <span>Confidence</span>
+              <span id="confidencePct"></span>
+            </div>
+            <div class="confidence-bar-track">
+              <div class="confidence-bar-fill" id="confidenceBar"></div>
+            </div>
+          </div>
+
+          <div class="prob-grid">
+            <div class="prob-item prob-ai">
+              <span class="prob-icon">🤖</span>
+              <span class="prob-label">AI Generated</span>
+              <span class="prob-val" id="aiProb">—</span>
+            </div>
+            <div class="prob-item prob-real">
+              <span class="prob-icon">📷</span>
+              <span class="prob-label">Real Photo</span>
+              <span class="prob-val" id="realProb">—</span>
+            </div>
+          </div>
+
+          <p class="tta-note" id="ttaNote"></p>
+        </div>
+
+        <!-- Error state -->
+        <div class="state state-error hidden" id="stateError">
+          <div class="error-icon">⚠️</div>
+          <p class="error-msg" id="errorMsg">Something went wrong.</p>
+          <p class="error-hint">Make sure the backend is running:<br><code>uvicorn app.app:app --port 8000</code></p>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- Info strip -->
+    <div class="info-strip">
+      <div class="info-item">
+        <span class="info-icon">⚡</span>
+        <span>EfficientNetV2-S</span>
+      </div>
+      <div class="info-item">
+        <span class="info-icon">🔁</span>
+        <span>TTA × 8</span>
+      </div>
+      <div class="info-item">
+        <span class="info-icon">🎯</span>
+        <span>Threshold 60 %</span>
+      </div>
+    </div>
+
+  </main>
+
+  <!-- ── Footer ── -->
+  <footer>
+    <p>ai-vs-real-classifier · v2 · <a href="https://www.kaggle.com/datasets/tristanzhang32/ai-generated-images-vs-real-images" target="_blank" rel="noopener">Dataset</a></p>
+  </footer>
+
+  <script src="/static/script.js"></script>
+</body>
+</html>

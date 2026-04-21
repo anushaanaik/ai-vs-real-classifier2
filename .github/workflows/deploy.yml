@@ -1,0 +1,66 @@
+name: Deploy to AWS
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout Code
+      uses: actions/checkout@v4
+
+    - name: Configure AWS Credentials
+      uses: aws-actions/configure-aws-credentials@v4
+      with:
+        aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+        aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+        aws-region: us-east-1
+
+    - name: Login to Amazon ECR
+      id: login-ecr
+      uses: aws-actions/amazon-ecr-login@v2
+
+    - name: Build, tag, and push image to Amazon ECR
+      env:
+        ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
+        ECR_REPOSITORY: ai-vs-real-fastapi
+        IMAGE_TAG: latest
+      run: |
+        docker build -t $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG .
+        docker push $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG
+
+    - name: Generate Dockerrun.aws.json
+      env:
+        ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
+        ECR_REPOSITORY: ai-vs-real-fastapi
+        IMAGE_TAG: latest
+      run: |
+        echo '{
+          "AWSEBDockerrunVersion": "1",
+          "Image": {
+            "Name": "'$ECR_REGISTRY'/'$ECR_REPOSITORY':'$IMAGE_TAG'",
+            "Update": "true"
+          },
+          "Ports": [
+            {
+              "ContainerPort": 8000,
+              "HostPort": 80
+            }
+          ]
+        }' > Dockerrun.aws.json
+        zip deploy.zip Dockerrun.aws.json
+
+    - name: Deploy to Elastic Beanstalk
+      uses: einaregilsson/beanstalk-deploy@v22
+      with:
+        aws_access_key: ${{ secrets.AWS_ACCESS_KEY_ID }}
+        aws_secret_key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+        application_name: ai-classifier-app
+        environment_name: ai-classifier-env
+        version_label: "v-${{ github.sha }}"
+        region: us-east-1
+        deployment_package: deploy.zip

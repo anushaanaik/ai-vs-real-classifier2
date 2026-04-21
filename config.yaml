@@ -1,0 +1,68 @@
+# ─────────────────────────────────────────────
+# AI vs Real Classifier — Configuration
+# ─────────────────────────────────────────────
+
+model:
+  architecture: EfficientNetB3
+  img_size: 224
+  confidence_threshold: 0.60
+  tta_steps: 8
+
+training:
+  batch_size: 32
+  seed: 42
+
+  phase1:
+    epochs: 12
+    learning_rate: 0.0003   # 3e-4
+    frozen_base: true
+
+  phase2:
+    epochs: 20
+    learning_rate: 0.00002  # 2e-5
+    unfreeze_top_layers: 50
+
+  callbacks:
+    early_stopping_patience: 5
+    reduce_lr_patience: 3
+    reduce_lr_factor: 0.3
+    min_lr: 0.0000001
+
+augmentation:
+  phase1:
+    horizontal_flip: true
+    rescale: true
+
+  phase2:
+    horizontal_flip: true
+    rotation_range: 15
+    zoom_range: 0.15
+    width_shift_range: 0.1
+    height_shift_range: 0.1
+    brightness_range: [0.65, 1.35]
+    fill_mode: reflect
+    jpeg_compression: true
+    gaussian_noise: true
+    resize_artifact: true
+    blur: true
+
+data:
+  dataset_root: data/dataset
+  zip_path: data/ai-generated-images-vs-real-images.zip
+  train_frac: 0.75
+  val_frac: 0.15
+  # test_frac: 0.10 (remainder)
+  classes:
+    - ai
+    - real
+
+paths:
+  model_path: models/model_v1.keras
+  class_json: models/class_names.json
+  log_file: logs/app.log
+  eval_output: logs/
+
+server:
+  host: 0.0.0.0
+  port: 8000
+  max_upload_mb: 10

@@ -1,0 +1,44 @@
+{
+  "class_names": [
+    "ai",
+    "real"
+  ],
+  "class_indices": {
+    "ai": 0,
+    "real": 1
+  },
+  "label_map": {
+    "0": "AI",
+    "1": "REAL"
+  },
+  "confidence_threshold": 0.6,
+  "model_architecture": "EfficientNetV2S",
+  "input_size": 224,
+  "tta_steps_default": 8,
+  "include_preprocessing": true,
+  "final_metrics": {
+    "val_accuracy": 0.7158,
+    "val_auc": 0.7831,
+    "test_accuracy": 0.7067,
+    "test_auc": 0.7825
+  },
+  "dataset": {
+    "source": "Google Drive zip (read-only \u2014 never deleted)",
+    "total_images": 11999,
+    "train": 9000,
+    "val": 1799,
+    "test": 1200,
+    "train_frac": 0.75,
+    "val_frac": 0.15
+  },
+  "training": {
+    "framework": "TensorFlow/Keras",
+    "mixed_precision": "float16",
+    "xla_jit": true,
+    "data_pipeline": "tf.data",
+    "batch_size": 128,
+    "phase1_lr": 0.001,
+    "phase2_lr": 2e-05,
+    "phase2_unfreeze_top": 40
+  }
+}
