@@ -138,6 +138,10 @@ def predict_image(
 
 # Initialize FastAPI app (this is what uvicorn will run)
 app = FastAPI(title="AI vs Real Image Classifier - Cloud Edition")
+@app.get("/")
+async def health_check():
+    return {"status": "healthy", "message": "API is running!"}
+
 
 # Initialize AWS clients
 s3_client = boto3.client('s3', region_name='us-east-1')
