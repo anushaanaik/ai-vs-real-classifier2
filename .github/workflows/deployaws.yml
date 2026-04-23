@@ -67,3 +67,4 @@ jobs:
         region: us-east-1
         deployment_package: deploy.zip
         use_existing_version_if_available: true
+        wait_for_environment_recovery: 180

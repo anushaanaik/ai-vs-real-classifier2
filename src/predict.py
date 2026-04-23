@@ -6,6 +6,8 @@ import os
 import numpy as np
 import tempfile
 import uuid
+from fastapi.staticfiles import StaticFiles
+from fastapi.responses import FileResponse
 
 # --- CLOUD API IMPORTS ---
 from fastapi import FastAPI, File, UploadFile, HTTPException
@@ -138,9 +140,13 @@ def predict_image(
 
 # Initialize FastAPI app (this is what uvicorn will run)
 app = FastAPI(title="AI vs Real Image Classifier - Cloud Edition")
+app.mount("/frontend", StaticFiles(directory="frontend"), name="frontend")
 @app.get("/")
 async def health_check():
     return {"status": "healthy", "message": "API is running!"}
+@app.get("/", include_in_schema=False)
+async def serve_frontend():
+    return FileResponse("frontend/index.html")
 
 
 # Initialize AWS clients

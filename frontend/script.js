@@ -2,7 +2,7 @@
  * script.js — Frontend logic for AI vs Real Image Classifier
  */
 
-const API_BASE = window.location.origin; // ✅ no hardcoded port
+//const API_BASE = window.location.origin; // ✅ no hardcoded port
 
 // ── DOM refs ──────────────────────────────────────────────────────────────────
 const dropZone      = document.getElementById('dropZone');
@@ -117,7 +117,9 @@ async function uploadImage(file) {
   });
 
   try {
-    const res = await fetch(`${API_BASE}/predict`, {
+    const currentPath = window.location.pathname.replace(/\/$/, ""); 
+    const apiUrl = `${currentPath}/predict`;
+    const res = await fetch(apiUrl, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
