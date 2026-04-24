@@ -117,8 +117,9 @@ async function uploadImage(file) {
   });
 
   try {
-    const currentPath = window.location.pathname.replace(/\/$/, ""); 
-    const apiUrl = `${currentPath}/predict`;
+    // Use a relative path. The browser will automatically resolve this to 
+    // https://...amazonaws.com/prod/predict
+    const apiUrl = 'predict'; 
     const res = await fetch(apiUrl, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
