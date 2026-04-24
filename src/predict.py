@@ -144,7 +144,22 @@ app = FastAPI(
     title="AI vs Real Image Classifier - Cloud Edition",
     root_path="/prod"
 )
-app.mount("/static", StaticFiles(directory="frontend/static"), name="static")
+
+from fastapi.responses import FileResponse # Make sure this is imported at the top
+
+@app.get("/static/style.css", include_in_schema=False)
+async def serve_css():
+    return FileResponse("frontend/static/style.css", media_type="text/css")
+
+@app.get("/static/script.js", include_in_schema=False)
+async def serve_js():
+    return FileResponse("frontend/static/script.js", media_type="application/javascript")
+
+@app.get("/favicon.ico", include_in_schema=False)
+async def serve_favicon():
+    # If you don't have a favicon, this stops the 404 error in the console
+    return {"status": "ok"} 
+#app.mount("/static", StaticFiles(directory="frontend/static"), name="static")
 @app.get("/health")
 async def health_check():
     return {"status": "healthy", "message": "API is running!"}
