@@ -139,7 +139,11 @@ def predict_image(
 # ─── FASTAPI & AWS CLOUD INTEGRATION ────────────────────────
 
 # Initialize FastAPI app (this is what uvicorn will run)
-app = FastAPI(title="AI vs Real Image Classifier - Cloud Edition")
+# The root_path tells Swagger UI to prepend /prod to all internal API calls
+app = FastAPI(
+    title="AI vs Real Image Classifier - Cloud Edition",
+    root_path="/prod"
+)
 app.mount("/frontend", StaticFiles(directory="frontend"), name="frontend")
 @app.get("/")
 async def health_check():
