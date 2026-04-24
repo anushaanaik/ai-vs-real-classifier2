@@ -74,6 +74,10 @@ fileInput.addEventListener('change', () => {
   if (fileInput.files.length) handleFile(fileInput.files[0]);
 });
 
+fileInput.addEventListener('click', (e) => {
+  e.stopPropagation();
+});
+
 dropZone.addEventListener('click', () => fileInput.click());
 dropZone.addEventListener('keydown', (e) => {
   if (e.key === 'Enter' || e.key === ' ') fileInput.click();
