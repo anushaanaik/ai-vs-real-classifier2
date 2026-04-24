@@ -144,7 +144,7 @@ app = FastAPI(
     title="AI vs Real Image Classifier - Cloud Edition",
     root_path="/prod"
 )
-app.mount("/frontend", StaticFiles(directory="frontend"), name="frontend")
+app.mount("/static", StaticFiles(directory="frontend/static"), name="static")
 @app.get("/health")
 async def health_check():
     return {"status": "healthy", "message": "API is running!"}
