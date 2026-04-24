@@ -145,7 +145,7 @@ app = FastAPI(
     root_path="/prod"
 )
 app.mount("/frontend", StaticFiles(directory="frontend"), name="frontend")
-@app.get("/")
+@app.get("/health")
 async def health_check():
     return {"status": "healthy", "message": "API is running!"}
 @app.get("/", include_in_schema=False)
