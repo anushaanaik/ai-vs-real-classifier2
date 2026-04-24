@@ -108,31 +108,31 @@ resetBtn.addEventListener('click', resetUI);
 // ── API call ──────────────────────────────────────────────────────────────────
 
 async function uploadImage(file) {
-  // ✅ Convert to Base64 (strip data:image/...;base64, prefix)
-  const base64 = await new Promise((resolve, reject) => {
-    const reader = new FileReader();
-    reader.onload  = () => resolve(reader.result.split(',')[1]);
-    reader.onerror = reject;
-    reader.readAsDataURL(file);
-  });
-
   try {
-    // Use a relative path. The browser will automatically resolve this to 
-    // https://...amazonaws.com/prod/predict
     const apiUrl = 'predict'; 
+    
+    // Create FormData instead of JSON
+    const formData = new FormData();
+    formData.append('file', file); // 'file' matches the FastAPI parameter name
+
+    // Note: Do NOT set 'Content-Type' header when using FormData. 
+    // The browser sets it automatically with the correct boundary!
     const res = await fetch(apiUrl, {
       method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({
-        image_b64: base64,
-        filename:  file.name,
-        tta_steps: 8,
-      }),
+      body: formData,
     });
 
     if (!res.ok) {
-      const err = await res.json().catch(() => ({ detail: `HTTP ${res.status}` }));
-      throw new Error(err.detail || `Server error ${res.status}`);
+      const errData = await res.json().catch(() => ({}));
+      const detail = errData.detail;
+      let errorMessage = `Server error ${res.status}`;
+      
+      if (Array.isArray(detail)) {
+        errorMessage = detail[0].msg || JSON.stringify(detail);
+      } else if (typeof detail === 'string') {
+        errorMessage = detail;
+      }
+      throw new Error(errorMessage);
     }
 
     const data = await res.json();
@@ -141,9 +141,9 @@ async function uploadImage(file) {
   } catch (err) {
     showState(stateError);
     errorMsg.textContent = err.message || 'Network error — is the backend running?';
+    console.error(err);
   }
 }
-
 
 // ── Render result ─────────────────────────────────────────────────────────────
 
